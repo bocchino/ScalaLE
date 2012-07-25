@@ -1,0 +1,5 @@
+#!/bin/sh
+
+SLEC=${SCALA_LE_COMPILER}/build/quick/bin/scalac 
+
+addcp ${SLEC} -language:implicitConversions "$@"

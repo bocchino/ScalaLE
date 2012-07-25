@@ -1,0 +1,18 @@
+IMPLEMENTATION=${SCALA_LE}/Implementation
+RUNTIME=${IMPLEMENTATION}/Runtime
+SCRIPTS=${SCALA_LE}/Scripts
+SLE=sle -cp classes
+SLEC=slec
+SLE-TEST= ${SLE} -ea
+SRCS= ${wildcard sle/*.scala} ${wildcard ${RUNTIME}/sle/*.scala}
+
+all :: ${SRCS} classes
+	${SLEC} -d classes sle/*.scala
+
+classes :
+	mkdir $@
+
+clean :
+	rm -Rf classes
+
+
