@@ -5,8 +5,8 @@ import sle.annotations._
 @params("R")
 @precondition(true) 
 @effect(writes("R::_"))
-class DisjointArray[@params("_") T <: AnyRef](size:Int, 
-					      factory:Factory[T])
+class DisjointArray[@params("_") T](size:Int, 
+				    factory:Factory[T])
 {
   @default val defaultEffect = reads("R::Rep::(_)")
   @default val defaultInvariant = this isValid
