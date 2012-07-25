@@ -11,7 +11,7 @@ trait Factory[@params("_") T] {
 @params("E": @Effect)
 trait ParOp[@params("_") T] {
   @params("R")
-  @effect(writes("R"),"E")
+  @effect(writes("R")+"E")
   def op(elt:T @args("R")):Unit
 }
 

@@ -14,35 +14,40 @@ object annotations {
   class Region extends Annotation {
     def in(arg:Any):Boolean = true
     def disjoint(arg:Any):Boolean = true
-    def union(arg:Any):Set = new Set
+    def +(arg:Any):RegionSet = new RegionSet
   }
 
+  def Region(s:String) = new Region
   implicit def stringToRegion(s:String) = 
     new Region
 
   /**
    * Region sets
    */
-  class Set extends Annotation {
+  class RegionSet extends Annotation {
     def in(arg:Any):Boolean = true
     def disjoint(arg:Any):Boolean = true
-    def union(arg:Any):Set = new Set
+    def +(arg:Any):RegionSet = this
   }
 
-  implicit def stringToSet(s:String) = 
-    new Set
+  implicit def stringToRegionSet(s:String) = 
+    new RegionSet
 
   /**
    * Effects
    */
-  class Effect extends Annotation
+  class Effect extends Annotation {
+    def in(arg:Any):Boolean = true
+    def |(arg:Any):Boolean = true
+    def +(arg:Any):Effect = this
+  }
   implicit def stringToEffect(s:String) = 
     new Effect
 
-  class effect(e:Any*) extends Annotation
-  def writes(arg:Any*) = new Effect
-  def reads(arg:Any*) = new Effect
-  def effect(e:Any*) = new Effect
+  class effect(e:Any) extends Annotation
+  def writes(arg:Any) = new Effect
+  def reads(arg:Any) = new Effect
+  def effect(e:Any) = new Effect
 
   /**
    * Parameters and arguments to types and methods
@@ -61,14 +66,11 @@ object annotations {
   def range(start:String,end:String):List[Int] = Nil
 
   class predicate extends Annotation
-
-  class constructor extends Annotation
+  class invariant(pred:Any) extends Annotation
+  class precondition(pred:Any) extends Annotation
   class default extends Annotation
 
-  class invariant(s:String) extends Annotation
-  class precondition(s:String) extends Annotation
-
   def existsRegion(pred:(Region)=>Boolean):Boolean = true
-  def existsSet(pred:(Set)=>Boolean):Boolean = true
+  def existsSet(pred:(RegionSet)=>Boolean):Boolean = true
 
 }

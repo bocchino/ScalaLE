@@ -1,5 +1,6 @@
 #!/bin/sh
 
 SLEC=${SCALA_LE_COMPILER}/build/quick/bin/scalac 
+SLEC_OPTS="-language:implicitConversions -language:postfixOps"
 
-addcp ${SLEC} -language:implicitConversions "$@"
+addcp ${SLEC} ${SLEC_OPTS} "$@"
