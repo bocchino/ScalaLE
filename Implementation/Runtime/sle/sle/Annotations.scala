@@ -48,6 +48,7 @@ object annotations {
   def writes(arg:Any) = new Effect
   def reads(arg:Any) = new Effect
   def effect(e:Any) = new Effect
+  def assume(e:Effect) = new Effect
 
   /**
    * Parameters and arguments to types and methods
