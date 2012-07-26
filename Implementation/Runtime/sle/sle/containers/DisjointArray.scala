@@ -2,11 +2,11 @@ package sle.containers
 
 import sle.annotations._
 
-@params("R")
+@params("R","E": @Effect)
 @precondition(true) 
-@effect(writes("R::_"))
+@effect(writes("R::_")+"E")
 class DisjointArray[@params("_") T](size:Int, 
-				    factory:Factory[T])
+				    factory:(Int => T @args("R1")) @params("R1") @effect("E"))
 {
   @default val defaultEffect = reads("R::Rep::(_)")
   @default val defaultInvariant = this isValid
@@ -19,7 +19,7 @@ class DisjointArray[@params("_") T](size:Int,
     @predicate def isValidInterval(S:RegionSet, start:Int, end:Int):Boolean = {
       (start >= end) ||
       existsRegion (R1 => {
-	existsSet (S1 => {
+	existsRegionSet (S1 => {
 	  (this isValidInterval(S1,start+1,end)) &&
 	  (this(start).hasType[T @args(R1)]) &&
 	  ((R1 + S1) in S) &&
@@ -33,11 +33,11 @@ class DisjointArray[@params("_") T](size:Int,
   for (i <- 0 to size)
   {
     val r = new Region
-    rep(i) = factory.create(i): @args("R::r")
+    rep(i) = factory(i): @args("R::r")
   }
 
   @predicate def isValid:Boolean = {
-    existsSet(S => this isValidWRT(S))
+    existsRegionSet(S => this isValidWRT(S))
   }
 
   @predicate def isValidWRT(S:RegionSet):Boolean =
@@ -50,19 +50,18 @@ class DisjointArray[@params("_") T](size:Int,
   @params("R1")
   @precondition(
     (Region("R1") in "R::_") &&
-    existsSet (S => {
+    existsRegionSet (S => {
       (this isValidWRT(S)) &&
       (Region("R1") disjoint (S + "R::Rep::(_)"))
     })
   )
   @effect(writes("R::Rep::(i)"))
-  def set(i:Int, elt:T @args("R1")) 
-  {
+  def update(i:Int,elt:T @args("R1")) {
     rep(i) = elt.asInstanceOf[T @args("R::_")]
   }
 
   @effect(reads("R::Rep::(i)"))
-  def get(i:Int):T @args("R::_") = rep(i)
+  def apply(i:Int):T @args("R::_") = rep(i)
 
   @effect(writes("R::Rep::(i)"+"R::Rep::(j)"))
   def swap(i:Int, j:Int)
@@ -72,13 +71,16 @@ class DisjointArray[@params("_") T](size:Int,
     this.rep(i) = t
   }
 
+  type opType = (T @args("R1") => Unit) @params("R1","E": @Effect) @effect(writes("R1")+"E")
+
   @params("E": @Effect)
   @effect(writes("R::_")+"E")
   @invariant(defaultInvariant && ((writes("R::_")+"E") | "E"))
-  def parApply(operation:ParOp[T] @args("E"))
+  def parApply(op:opType)
   {
     (0 to rep.size).par foreach {
-      i => operation.op(rep(i))
+      i => op(rep(i))
     }
   }
+
 }

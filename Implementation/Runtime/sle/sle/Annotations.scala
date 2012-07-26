@@ -50,6 +50,8 @@ object annotations {
   def effect(e:Any) = new Effect
   def assume(e:Effect) = new Effect
 
+  val none = new Effect
+
   /**
    * Parameters and arguments to types and methods
    */
@@ -72,6 +74,6 @@ object annotations {
   class default extends Annotation
 
   def existsRegion(pred:(Region)=>Boolean):Boolean = true
-  def existsSet(pred:(RegionSet)=>Boolean):Boolean = true
+  def existsRegionSet(pred:(RegionSet)=>Boolean):Boolean = true
 
 }
