@@ -5,12 +5,9 @@ This is the repository for the research project Scala with Logical
 Effects.  To use the project, do the following:
 
 1. Clone the repository ScalaLE-Compiler:
-
->`git clone git://github.com/bocchino/ScalaLE-Compiler.git ScalaLE-Compiler`
-
+    `git clone git://github.com/bocchino/ScalaLE-Compiler.git ScalaLE-Compiler`
 2. Clone this repository:
-
->`git clone git@github.com:bocchino/ScalaLE.git ScalaLE`
+    `git clone git@github.com:bocchino/ScalaLE.git ScalaLE`
 
 3. Set the following environment variables:
 
