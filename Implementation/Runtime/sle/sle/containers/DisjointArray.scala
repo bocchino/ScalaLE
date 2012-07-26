@@ -14,7 +14,7 @@ class DisjointArray[@params("_") T](size:Int,
   val Rep = new Region
 
   class RepArray(size:Int) 
-  extends (IndexParameterizedArray[T] @args("R::_","R::Rep::(this.index)"))(size) {
+  extends (IndexParameterizedArray[T] @args("R"))(size) {
     @effect(reads("R::Rep::(start,end)"))
     @predicate def isValidInterval(S:RegionSet, start:Int, end:Int):Boolean = {
       (start >= end) ||
@@ -47,16 +47,14 @@ class DisjointArray[@params("_") T](size:Int,
     (S disjoint "R::Rep::(_)")
   }
   
-  @predicate def setPrecondition(R1:Region):Boolean = {
-    (R1 in "R::_") &&
+  @params("R1")
+  @precondition(
+    (Region("R1") in "R::_") &&
     existsSet (S => {
       (this isValidWRT(S)) &&
-      (R1 disjoint (S + "R::Rep::(_)"))
+      (Region("R1") disjoint (S + "R::Rep::(_)"))
     })
-  }
-
-  @params("R1")
-  @precondition(setPrecondition(Region("R1")))
+  )
   @effect(writes("R::Rep::(i)"))
   def set(i:Int, elt:T @args("R1")) 
   {
