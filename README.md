@@ -45,9 +45,9 @@ compiler located at
 So far the compiler does not do much; it just parses the annotations
 provided by the runtime.  The annotations are defined in
 
-    ${SCALA_LE}/Runtime/sle/sle/Annotations.scala
+    ${SCALA_LE}/Implementation/Runtime/sle/sle/Annotations.scala
 
-Examples of how the annotations are used can be found in
+Example uses of the annotations can be found in
 
     ${SCALA_LE}/Implementation/Runtime/sle/sle/containers/*.scala
 
