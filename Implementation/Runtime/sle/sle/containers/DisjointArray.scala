@@ -3,18 +3,20 @@ package sle.containers
 import sle.annotations._
 
 @params("R","E": @Effect)
-@precondition(true) 
-@effect(writes("R::_")+"E")
 class DisjointArray[@params("_") T](size:Int, 
 				    factory:(Int => T @args("R1")) @params("R1") @effect("E"))
 {
-  @default val defaultEffect = reads("R::Rep::(_)")
-  @default val defaultInvariant = this isValid
+  val defaultInvariant = this isValid
+  val defaultEffect = reads("R::Rep::(_)")
+  
+  val constructorPrecondition = true
+  val constructorEffect = writes("R::_")+"E"
 
   val Rep = new Region
 
   class RepArray(size:Int) 
-  extends (IndexParameterizedArray[T] @args("R"))(size) {
+    extends (IndexParameterizedArray[T @args("R::_")] @args("R::Rep"))(size)
+  {
     @effect(reads("R::Rep::(start,end)"))
     @predicate def isValidInterval(S:RegionSet, start:Int, end:Int):Boolean = {
       (start >= end) ||

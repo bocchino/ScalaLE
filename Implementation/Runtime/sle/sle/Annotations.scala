@@ -44,7 +44,7 @@ object annotations {
   implicit def stringToEffect(s:String) = 
     new Effect
 
-  class effect(e:Any) extends Annotation
+  case class effect(e:Any) extends Annotation
   def writes(arg:Any) = new Effect
   def reads(arg:Any) = new Effect
   def effect(e:Any) = new Effect
@@ -69,11 +69,15 @@ object annotations {
   def range(start:String,end:String):List[Int] = Nil
 
   class predicate extends Annotation
-  class invariant(pred:Any) extends Annotation
+  case class invariant(pred:Any) extends Annotation
   class precondition(pred:Any) extends Annotation
-  class default extends Annotation
 
   def existsRegion(pred:(Region)=>Boolean):Boolean = true
   def existsRegionSet(pred:(RegionSet)=>Boolean):Boolean = true
+
+  class default extends Annotation
+  class constructor extends Annotation
+
+  val defaultInvariant = true
 
 }
