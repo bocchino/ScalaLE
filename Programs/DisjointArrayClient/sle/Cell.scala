@@ -5,10 +5,10 @@ import sle.containers._
 class Cell(var data:Int) 
 
 object Cell {
-  @params("R1")
+  @params("Rf")
   @effect(none)
-  def factory(i:Int):Cell @args("R1") = {
-    new (Cell @args("R1"))(i)
+  def factory(i:Int):Cell @args("Rf") = {
+    new (Cell @args("Rf"))(i)
   }
 }
 
