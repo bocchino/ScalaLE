@@ -4,7 +4,7 @@ import sle.annotations._
 
 @params("R","E": @Effect)
 class DisjointArray[@params("_") T](size:Int, 
-				    factory:(Int => T @args("R1")) @params("R1") @effect("E"))
+				    factory:(Int => T @args("Rf")) @params("Rf") @effect("E"))
 {
   val defaultInvariant = this isValid
   val defaultEffect = reads("R::Rep::(_)")
@@ -49,16 +49,16 @@ class DisjointArray[@params("_") T](size:Int,
     (S disjoint "R::Rep::(_)")
   }
   
-  @params("R1")
+  @params("Rf")
   @precondition(
-    (Region("R1") in "R::_") &&
+    (Region("Rf") in "R::_") &&
     existsRegionSet (S => {
       (this isValidWRT(S)) &&
-      (Region("R1") disjoint (S + "R::Rep::(_)"))
+      (Region("Rf") disjoint (S + "R::Rep::(_)"))
     })
   )
   @effect(writes("R::Rep::(i)"))
-  def update(i:Int,elt:T @args("R1")) {
+  def update(i:Int,elt:T @args("Rf")) {
     rep(i) = elt.asInstanceOf[T @args("R::_")]
   }
 
@@ -73,7 +73,7 @@ class DisjointArray[@params("_") T](size:Int,
     this.rep(i) = t
   }
 
-  type opType = (T @args("R1") => Unit) @params("R1","E": @Effect) @effect(writes("R1")+"E")
+  type opType = (T @args("Rf") => Unit) @params("Rf","E": @Effect) @effect(writes("Rf")+"E")
 
   @params("E": @Effect)
   @effect(writes("R::_")+"E")
