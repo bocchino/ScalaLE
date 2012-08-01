@@ -25,8 +25,8 @@ class DisjointArray[@params("_") T](size:Int,
 	(start >= end) ||
 	existsRegion (R1 => {
 	  existsRegionSet (S1 => {
-	    (this isValidInterval(S1,start+1,end)) &&
-	    (this(start).hasType[T @args(R1)]) &&
+	    (this isValidInterval(S1,start,end-1)) &&
+	    (this(end).hasType[T @args(R1)]) &&
 	    ((R1 + S1) in S) &&
 	    (R1 disjoint S1)
 	  })
