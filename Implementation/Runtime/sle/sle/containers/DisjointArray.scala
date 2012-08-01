@@ -19,21 +19,26 @@ class DisjointArray[@params("_") T](size:Int,
   {
     @effect(reads("R::Rep::(start,end)"))
     @predicate def isValidInterval(S:RegionSet, start:Int, end:Int):Boolean = {
-      (start >= end) ||
-      existsRegion (R1 => {
-	existsRegionSet (S1 => {
-	  (this isValidInterval(S1,start+1,end)) &&
-	  (this(start).hasType[T @args(R1)]) &&
-	  ((R1 + S1) in S) &&
-	  (R1 disjoint S1)
+      (S in "R::_") &&
+      (S disjoint "R::Rep::(_)") &&     
+      (
+	(start >= end) ||
+	existsRegion (R1 => {
+	  existsRegionSet (S1 => {
+	    (this isValidInterval(S1,start+1,end)) &&
+	    (this(start).hasType[T @args(R1)]) &&
+	    ((R1 + S1) in S) &&
+	    (R1 disjoint S1)
+	  })
 	})
-      })
+      )
     }
   }
 
   private val rep = new RepArray(size);
   for (i <- 0 to size)
   {
+    invariant(existsRegionSet(S => rep isValidInterval(S,0,i)))
     val r = new Region
     rep(i) = factory(i): @args("R::r")
   }
@@ -44,9 +49,7 @@ class DisjointArray[@params("_") T](size:Int,
 
   @predicate def isValidWRT(S:RegionSet):Boolean =
   {
-    (this.rep isValidInterval(S,0,this.rep.size)) &&
-    (S in "R::_") &&
-    (S disjoint "R::Rep::(_)")
+    this.rep isValidInterval(S,0,this.rep.size)
   }
   
   @params("Rf")
