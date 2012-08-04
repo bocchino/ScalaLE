@@ -37,104 +37,100 @@ class DisjointArray[@params("_") T](size:Int,
   for (i <- 0 to size)
   {
     invariant(i >= 0 && existsRegionSet(S => rep isValidInterval(S,0,i-1)))    
-    /*
-     * // ( -- Definition of isValidInterval -->)
-     * 
-     * (i >= 0) && existsRegionSet(S =>
-     *   (S in R::_) && (S disjoint R::Rep::(_)) &&
-     *   rep isValidInterval(S,0,i-1)
-     * )
-     * 
-     * // (-- Choose S1=S -->)
-     * 
-     * (i >= 0) && existsRegionSet(S =>
-     *   (S in R::_) && (S disjoint R::Rep::(_)) &&
-     *   existsRegionSet (S1 =>
-           (rep isValidInterval(S1,0,i-1)) &&
-     *     (S1 in S)
-     *   )
-     * )
-     * 
-     * // (-- RPL and set axioms -->)
-     * 
-     * (i >= 0) && existsRegionSet(S =>
-     *   (S+R::FRESH in R::_) && (S+R::FRESH disjoint R::Rep::(_)) && (
-     *     existsRegionSet (S1 =>
-     *       (rep isValidInterval(S1,0,i-1)) &&
-     *       ((factory(i): @args(R::FRESH)).hasType[T @args(R::FRESH)]) &&
-     *       ((R::FRESH+S1) in (S+R::FRESH)) &&
-     *       (R::FRESH disjoint S1)
-     *     )
-     *   )
-     * )
-     * 
-     * // (-- Renaming -->)
-     * 
-     * (i >= 0) && existsRegionSet(S =>
-     *   (S in R::_) && (S disjoint R::Rep::(_)) && (
-     *     existsRegionSet (S1 =>
-     *       (rep isValidInterval(S1,0,i-1)) &&
-     *       ((factory(i): @args(R::FRESH)).hasType[T @args(R::FRESH)]) &&
-     *       ((R::FRESH + S1) in S) &&
-     *       (R::FRESH disjoint S1)
-     *     )
-     *   )
-     * )
-     * 
-     * // (-- Parameter substitution -->)
-     *
-     * (i >= 0) && existsRegionSet(S =>
-     *   (S in R::_) && (S disjoint R::Rep::(_)) && (
-     *     existsRegionSet (S1 =>
-     *       existsRegion (R1 => {
-     *         (rep isValidInterval(S1,0,i-1)) &&
-     *         ((factory(i): @args(R::FRESH)).hasType[T @args(R1)]) &&
-     *         ((R1 + S1) in S) &&
-     *         (R1 disjoint S1)
-     *       })
-     *     )
-     *   )
-     * )
-     *
-     * // (<-- Fresh region --)
-     */
+
+    assertion {
+      (i >= 0) && 
+      existsRegionSet(S =>
+	(S in "R::_") && (S disjoint "R::Rep::(_)") &&
+        (rep isValidInterval(S,0,i-1))
+      )
+    } because "Definition of isValidInterval"
+
+    assertion {
+      (i >= 0) &&
+      existsRegionSet(S =>
+	(S in "R::_") && (S disjoint "R::Rep::(_)") &&
+        existsRegionSet(S1 =>
+	  (rep isValidInterval(S1,0,i-1)) &&
+          (S1 in S)
+        )
+      )
+    } because "Choose S1=S"
+
+    assertion {
+      (i >= 0) && existsRegionSet(S =>
+        (S+"R::FRESH" in "R::_") && (S+"R::FRESH" disjoint "R::Rep::(_)") &&
+        existsRegionSet (S1 =>
+          (rep isValidInterval(S1,0,i-1)) &&
+	  ((factory(i): @args("R::FRESH")).hasType[T @args("R::FRESH")]) &&
+	  (("R::FRESH"+S1) in (S+"R::FRESH")) &&
+          ("R::FRESH" disjoint S1)
+        )
+      )
+    } because "RPL and set axioms"
+
+    assertion {
+      (i >= 0) && existsRegionSet(S =>
+        (S in "R::_") && (S disjoint "R::Rep::(_)") &&
+        existsRegionSet (S1 =>
+          (rep isValidInterval(S1,0,i-1)) &&
+          ((factory(i): @args("R::FRESH")).hasType[T @args("R::FRESH")]) &&
+          (("R::FRESH" + S1) in S) &&
+          ("R::FRESH" disjoint S1)
+        )
+      )
+    } because "Renaming"
+
+    assertion {
+      (i >= 0) && existsRegionSet(S =>
+        (S in "R::_") && (S disjoint "R::Rep::(_)") &&
+          existsRegionSet (S1 =>
+            existsRegion (R1 => 
+              (rep isValidInterval(S1,0,i-1)) &&
+              ((factory(i): @args("R::FRESH")).hasType[T @args(R1)]) &&
+              ((R1 + S1) in S) &&
+              (R1 disjoint S1)
+            )
+          )
+        )
+    } because "Choose R1=R::FRESH"
+
     val r = new Region
-    /*
-     * (i >= 0) && existsRegionSet(S =>
-     *   (S in R::_) && (S disjoint R::Rep::(_)) && (
-     *     (0 > i) ||
-     *     existsRegionSet (S1 =>
-     *       existsRegion (R1 => {
-     *         (rep isValidInterval(S1,0,i-1)) &&
-     *         ((factory(i): @args(R::r)).hasType[T @args(R1)]) &&
-     *         ((R1 + S1) in S) &&
-     *         (R1 disjoint S1)
-     *       })
-     *     )
-     *   )
-     * )
-     * 
-     * // (<-- Assignment --)
-     */
+
+    assertion {
+      (i >= 0) && existsRegionSet(S =>
+	(S in "R::_") && (S disjoint "R::Rep::(_)") &&
+          existsRegionSet (S1 =>
+	    existsRegion (R1 =>
+              ((factory(i): @args("R::r")).hasType[T @args(R1)]) &&
+              ((R1 + S1) in S) &&
+              (R1 disjoint S1)
+            )
+          )
+        )
+    } because "r is fresh"
+
     rep(i) = factory(i): @args("R::r")
-    /*
-     * (i >= 0) && existsRegionSet(S =>
-     *   (S in R::_) && (S disjoint R::Rep::(_)) && (
-     *     existsRegionSet (S1 =>
-     *       existsRegion (R1 => {
-     *         (rep isValidInterval(S1,0,i-1)) &&
-     *         (rep(i).hasType[T @args(R1)]) &&
-     *         ((R1 + S1) in S) &&
-     *         (R1 disjoint S1)
-     *       })
-     *     )
-     *   )
-     * )
-     * 
-     * // (<-- Definition of isValidInterval --)
-     * 
-     * (i >= 0) && existsRegionSet(S => rep isValidInterval(S,0,i)
-     */
+
+    assertion {
+      (i >= 0) && existsRegionSet(S =>
+        (S in "R::_") && (S disjoint "R::Rep::(_)") && (
+          existsRegionSet (S1 =>
+            existsRegion (R1 =>
+              (rep isValidInterval(S1,0,i-1)) &&
+              (rep(i).hasType[T @args(R1)]) &&
+              ((R1 + S1) in S) &&
+              (R1 disjoint S1)
+            )
+          )
+        )
+      )
+    } because "Assignment"
+      
+    assertion {
+      (i >= 0) && existsRegionSet(S => rep isValidInterval(S,0,i))
+    } because "Definition of isValidInterval"
+  
   }
 
 

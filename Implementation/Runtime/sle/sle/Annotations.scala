@@ -30,9 +30,6 @@ object annotations {
     def +(arg:Any):RegionSet = this
   }
 
-  implicit def stringToRegionSet(s:String) = 
-    new RegionSet
-
   /**
    * Effects
    */
@@ -41,8 +38,6 @@ object annotations {
     def |(arg:Any):Boolean = true
     def +(arg:Any):Effect = this
   }
-  implicit def stringToEffect(s:String) = 
-    new Effect
 
   case class effect(e:Any) extends Annotation
   def writes(arg:Any) = new Effect
@@ -72,6 +67,11 @@ object annotations {
   case class invariant(pred:Any) extends Annotation
   class precondition(pred:Any) extends Annotation
 
+
+  def assertion(pred:Any) = new Implication
+  class Implication {
+    def because(reason:String) = {}
+  }
   def existsRegion(pred:(Region)=>Boolean):Boolean = true
   def existsRegionSet(pred:(RegionSet)=>Boolean):Boolean = true
 
