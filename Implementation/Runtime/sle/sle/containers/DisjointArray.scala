@@ -47,7 +47,7 @@ class DisjointArray[@params("_") T](size:Int,
 
     assertion {
       exists ((S:RegionSet) => {
-	rep isValidInterval(S,0,i-1) &&
+	(rep isValidInterval(S,0,i-1)) &&
 	("R::FRESH" disjoint "R::Rep::(_)") &&
 	("R::FRESH" disjoint S)
       })
@@ -57,20 +57,20 @@ class DisjointArray[@params("_") T](size:Int,
 
     assertion {
       exists ((S:RegionSet,Ri:Region) => {
-	rep isValidInterval(S,0,i-1) &&
+	(rep isValidInterval(S,0,i-1)) &&
 	("R::r" in "R::_") && 
 	("R::r" disjoint "R::Rep::(_)") &&
-	((factory(i): @args("R::r")) hasType[T @args("R::r")]) &&
+	((factory(i): @args("R::r")).hasType[T @args("R::r")]) &&
 	("R::r" disjoint S)
       })
     }
 	   
     assertion {
       exists ((S:RegionSet,Ri:Region) => {
-	rep isValidInterval(S,0,i-1) &&
+	(rep isValidInterval(S,0,i-1)) &&
 	(Ri in "R::_") && 
 	(Ri disjoint "R::Rep::(_)") &&
-	((factory(i): @args("R::r")) hasType[T @args(Ri)]) &&
+	((factory(i): @args("R::r")).hasType[T @args(Ri)]) &&
 	(Ri disjoint S)
       })
     }
@@ -79,10 +79,10 @@ class DisjointArray[@params("_") T](size:Int,
 
     assertion {
       exists ((S:RegionSet,Ri:Region) => {
-	rep isValidInterval(S,0,i-1) &&
+	(rep isValidInterval(S,0,i-1)) &&
 	(Ri in "R::_") && 
 	(Ri disjoint "R::Rep::(_)") &&
-	(rep(i) hasType[T @args(Ri)]) &&
+	(rep(i).hasType[T @args(Ri)]) &&
 	(Ri disjoint S)
       })
     }
