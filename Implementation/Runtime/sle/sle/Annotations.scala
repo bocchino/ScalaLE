@@ -68,12 +68,20 @@ object annotations {
   class precondition(pred:Any) extends Annotation
 
 
+  implicit def booleanToPremise(b:Boolean) = new Premise
+  class Premise {
+    def ->(pred:Any):Boolean = true
+  }
+
   def assertion(pred:Any) = new Implication
   class Implication {
     def because(reason:String) = {}
   }
+  def exists(pred:Any):Boolean = true
   def existsRegion(pred:(Region)=>Boolean):Boolean = true
   def existsRegionSet(pred:(RegionSet)=>Boolean):Boolean = true
+
+  def forAll(pred:Any):Boolean = true
 
   class default extends Annotation
   class constructor extends Annotation

@@ -11,7 +11,7 @@
   (
     (Region 
       (regionName (index Int)) 
-      (rpl (tail Region) (head Int))
+      (rpl (tail Region) (head Region))
     )
   )
 )
