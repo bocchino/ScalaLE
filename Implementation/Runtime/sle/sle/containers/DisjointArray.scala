@@ -80,9 +80,9 @@ class DisjointArray[@params("_") T](size:Int,
     assertion {
       exists ((S:RegionSet,Ri:Region) => {
 	(rep isValidInterval(S,0,i-1)) &&
+	(rep(i).hasType[T @args(Ri)]) &&
 	(Ri in "R::_") && 
 	(Ri disjoint "R::Rep::(_)") &&
-	(rep(i).hasType[T @args(Ri)]) &&
 	(Ri disjoint S)
       })
     }
