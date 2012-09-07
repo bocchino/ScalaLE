@@ -182,7 +182,7 @@ class DisjointArray[@params("_") T](size:Int,
    */
   @predicate def isValidWRT(S:RegionSet):Boolean =
   {
-    this.rep isValidInterval(S,0,this.rep.size)
+    this.rep isValidInterval(S,0,this.rep.size-1)
   }
 
   /**
