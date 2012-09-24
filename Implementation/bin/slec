@@ -3,4 +3,4 @@
 SLEC=${SCALA_LE_COMPILER}/build/quick/bin/scalac 
 SLEC_OPTS="-language:implicitConversions -language:postfixOps"
 
-addcp ${SLEC} ${SLEC_OPTS} "$@"
+sle-addcp ${SLEC} ${SLEC_OPTS} "$@"
